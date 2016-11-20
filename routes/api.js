@@ -1,0 +1,85 @@
+var express = require('express');
+var router = express.Router();
+
+/* data layer  */
+var dogs = [
+  {
+    "dog_id": "0",
+    "dog_name": "Gus"
+  },
+  {
+    "dog_id": "1",
+    "dog_name": "Ted"
+  },
+  {
+    "dog_id": "2",
+    "dog_name":"Chloe"
+  }
+];
+
+/* GET  all dogs */
+router.get('/dogs/', (req,res, next) => {
+  res.json(dogs);
+});
+
+/* PUT replace all dogs */
+router.put('/dogs/', (req,res, next) => {
+  console.lgo(req.body);
+  dogs =req.body;
+  res.json({"STATUS":"200 OK"});
+});
+
+/* POST create a new dog */
+router.post('/dogs/', (req, res, next) => {
+  dogs.push(req.body);
+  res.json({"STATUS": "200 OK"});
+});
+
+/* DELETE delete the entire dog collection */
+router.delete('/dogs/',(req, res, next) => {
+  dogs = [];
+  res.json({"STATUS": "200 OK"});
+});
+
+/* GET a specific dog */
+router.get('/dogs/:id',(req,res, next) => {
+  var i = 0;
+  var dog = null;
+  for(i=0; i< dogs.length; i++){
+    if(dogs[i].dog_id == req.params.id){
+      dog = dogs[i];
+      break;
+    }
+  }
+  dog !== null ? res.json(dog): res.json({"STATUS":"404 NOT FOUND"});
+});
+/* PUT replace a specific dog with another dog */
+router.put('/dogs/:id', function(req, res, next) {
+  var i = 0;
+  var dog = null;
+  for(i = 0; i != dogs.length; i++){
+    if(dogs[i].dog_id == req.params.id){
+      dog = dogs[i];
+      break;
+    }
+  }
+  if(dog !== null){
+    dog.dog_name = req.body['dog_name']
+    res.json({"STATUS": "200 OK"});
+  } else {
+    res.json({"STATUS": "404 NOT FOUND"});
+  }
+});
+
+/* DELETE a specific dog from the collection */
+router.delete('/dogs/:id', function(req, res, next) {
+  var i = 0;
+  for(i = 0; i != dogs.length; i++){
+    if(dogs[i].dog_id == req.params.id){
+      dogs.splice(i, 1);
+      return res.json({"STATUS": "200 OK"});
+    }
+  }
+  return res.json({"STATUS": "404 NOT FOUND"});
+});
+module.exports = router;
